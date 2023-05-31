@@ -11,71 +11,128 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Newtonsoft.Json.Linq;
 using System.IO;
+using NeoBankWebApp.Models.Common;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http; 
 
 namespace NeoBankWebApp.Controllers
-{
+{ 
     public class LoginController : Controller
     {
-        private const string SessionKeyCaptcha = "Ajith123";
-        private readonly IAPIService _clientService;
-        private object stream;
-
+        private const string SessionKeyCaptcha = "";
+        private readonly IAPIService _clientService; 
         public LoginController(IAPIService clientServiceInstance) => (_clientService) = (clientServiceInstance);
         public IActionResult Login() {
-            Captcha();
-           return View();
+
+                       
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyCaptcha)))
+            {
+                Captcha(null);
+            }
+            else
+            {
+                Captcha(HttpContext.Session.GetString(SessionKeyCaptcha)); 
+            }
+
+            return View();
         }
         public JsonResult CaptchaRefresh()
         {
-            HttpContext.Session.Remove(SessionKeyCaptcha);
-            string capture = Captcha();
+           
+            string capture = Captcha(null);
            return Json(new { captchaImage = capture });           
         }      
         public JsonResult LoginVaildate(string UserName, string Password, string captchaInput)
         {
-         /*   string storedCaptchaCode = HttpContext.Session.GetString(SessionKeyCaptcha); 
-            HttpContext.Session.Remove(SessionKeyCaptcha); 
+            string access_token = string.Empty;
+            string refresh_token = string.Empty;
+            string token_genaration_time = string.Empty;
+            string customer_id = string.Empty;
+
+            if (string.IsNullOrEmpty(UserName))
+            {
+                return Json("Please Enter UserName");
+            }
+            if (string.IsNullOrEmpty(Password))
+            {
+                return Json("Please Enter PassWord");
+            }
+            if (string.IsNullOrEmpty(captchaInput))
+            {
+                return Json("Please Enter Captcha");
+            }
+
+            string storedCaptchaCode = HttpContext.Session.GetString(SessionKeyCaptcha);     
             bool isValid = !string.IsNullOrEmpty(storedCaptchaCode) &&
                            !string.IsNullOrEmpty(captchaInput) &&
-                           string.Equals(storedCaptchaCode, captchaInput, StringComparison.Ordinal);
-            if (isValid)
+                           string.Equals(storedCaptchaCode, captchaInput, StringComparison.OrdinalIgnoreCase);
+            HttpContext.Session.Remove(SessionKeyCaptcha);
+
+            if (!isValid)
             {
-                
-            }
-            else
-            {
-                return Json("Not valid");
-            }
-         */
+                 return Json("InValid Captcha");
+            }           
 
                 LoginRequest login = new LoginRequest();
                 login.UserName = UserName;
                 login.Password = Password;
-               
 
-            using (HttpResponseMessage responseMessages =  _clientService.LoginVaildate(login))
+            using (HttpResponseMessage responseMessages = _clientService.LoginVaildate(login))
             {
-                string stream = responseMessages.Content.ReadAsStringAsync().Result.ToString();
-
                 if (responseMessages.IsSuccessStatusCode)
-                { 
+                {
+                    string stream = responseMessages.Content.ReadAsStringAsync().Result.ToString();
+                    Tokens tokens = JsonConvert.DeserializeObject<Tokens>(stream);
+                    HttpContext.Session.SetString(access_token, tokens.Access_Token);
+                    HttpContext.Session.SetString(refresh_token, tokens.ToString());
+                    HttpContext.Session.SetString(token_genaration_time, DateTime.Now.ToString());
+                    //var result = _clientService.UserInfo(login, tokens.Access_Token);
 
+                    using (var result = _clientService.UserInfo(login, tokens.Access_Token))
+                    {
+                        if (responseMessages.IsSuccessStatusCode)
+                        {
+                            string custInfo = result.Content.ReadAsStringAsync().Result.ToString();
+
+                            UserInfoResponse custInformations = JsonConvert.DeserializeObject<UserInfoResponse>(custInfo);
+                            HttpContext.Session.SetString(customer_id, custInformations.CustomerId.ToString());
+
+                            if (custInformations.UserType=="1")
+                            {
+                                return Json("superadmin");
+                            }
+
+                            if (custInformations.UserType == "2")
+                            {
+                                return Json("admin");
+
+                            }
+                            if (custInformations.UserType == "3")
+                            {
+                                return Json("user");
+                            }
+                        }
+                        return Json("");
+
+                    }
 
                 }
-            }
-
-
-            // return Json(stream);
-
-            return Json("admin");
-
-
-
-
+            }                 
+          
+            return Json("UnExpected Error");
         }
-        public string Captcha()
+        public string Captcha(string RandamCode)
         {
-            string captchaCode = GenerateRandomCode();
+            string captchaCode = string.Empty;
+            HttpContext.Session.Remove(SessionKeyCaptcha);
+            if (RandamCode == null)
+            {
+                  captchaCode = GenerateRandomCode();
+            }  
+            else
+            {
+                  captchaCode = RandamCode;
+            }
             HttpContext.Session.SetString(SessionKeyCaptcha, captchaCode);
             byte[] captchaBytes = GenerateCaptchaImage(captchaCode);
             string base64Image = Convert.ToBase64String(captchaBytes);

@@ -1,4 +1,7 @@
-﻿ 
+﻿$(document).ready(function () {
+    // Clear all JavaScript and reload the page
+    location.reload();
+});
 function refreshcaptcha() {
     $.ajax({
         type: 'POST',
@@ -30,18 +33,16 @@ function LoadLogout() {
 }
 
  
-function submitLogin() {
-
-    var data = $("#loginForm").serialize();  
-    alert("hai")
+function submitLogin() { 
+alert("hai")
+    var data = $("#loginForm").serialize();    
     $.ajax({
         type: 'POST',
         url: '/Login/LoginVaildate',
         contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
         data: data,
-        success: function (result) {
-            alert("hai2")
-            alert(result)
+        success: function (result) { 
+            alert(result) 
             if (result == 'admin') {
                 window.location.href = "/Admin/Index";
             } else if (result == 'user') {

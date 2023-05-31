@@ -41,6 +41,22 @@ namespace NeoBankWebApp.API_Service
 
         }
 
+        public HttpResponseMessage UserInfo(LoginRequest requestBody, string token)
+        {
 
+            try
+            {               
+                var stringContent = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, Constants.ApplicationJson);
+                _client.DefaultRequestHeaders.Add("Authorization", "Bearer "+ token); 
+                return _client.PostAsync(Constants.GetUserInformation, stringContent).Result;
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+
+        }
     }
 }
