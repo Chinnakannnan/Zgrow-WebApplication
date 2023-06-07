@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using NeoBankWebApp.Models;
 using System.Diagnostics;
 
 namespace NeoBankWebApp.Controllers
 {
+ 
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

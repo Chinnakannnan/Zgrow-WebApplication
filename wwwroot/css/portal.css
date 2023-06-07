@@ -24,11 +24,13 @@
     --primary-code: 239, 0, 18;
     --primary-dark: rgb(192, 5, 19);
     --primary-dark-code: 192, 5, 19; */
-
-    --primary: rgb(18 107 114);
-    --primary-code: 18, 107, 114;
-    --primary-dark: rgb(19, 89, 111);
-    --primary-dark-code: 19, 89, 111;
+    /* --primary: rgb(18 107 114);*/
+    --primary: rgb(41 82 62);
+    --primary-code: 41, 82, 62;
+    /*  --primary-dark: rgb(19, 89, 111);
+    --primary-dark-code: 19, 89, 111;*/
+    --primary-dark: rgb(41 82 62);
+    --primary-dark-code: 41, 82, 62;
     --gray-dark: #4d4d4d;
     --dark: #5a5c69;
     --secondary: #858796;
@@ -74,7 +76,7 @@ html {
 }
 
 main {
-    background-color: #f6f6f6;
+    background-color: #e0f7df;
 }
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
@@ -109,7 +111,7 @@ body {
     line-height: 1.5;
     color: #3a3b45;
     text-align: left;
-    background-color: #fff;
+    background-color: #b7d1b945;
 }
 
 [tabindex="-1"]:focus:not(:focus-visible) {
@@ -11550,7 +11552,7 @@ a:focus {
 }
 
 .topbar {
-    height: 4.375rem;
+    height: 5.375rem;
 }
 
     .topbar #sidebarToggleTop {
@@ -13602,6 +13604,6 @@ table.dataTable > thead > tr > th {
 }
 
 .tablehead {
-    background-color: rgb(18 107 114);
+    background-color: rgb(41, 82, 62);
     color: #fff;
 }

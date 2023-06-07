@@ -7,7 +7,8 @@ namespace NeoBankWebApp.Models.Login
         [Required]
        public string UserName { get; set; }
         [Required]
-        public string Password { get; set; }    
+        public string Password { get; set; }
+        public string Captcha { get; set; }
     }
     public class Tokens
     {
@@ -17,6 +18,7 @@ namespace NeoBankWebApp.Models.Login
     public class UserInfoResponse
     {
         public string UserType { get; set; }
+        public string UserName { get; set; }
         public string CustomerId { get; set; }
 
     }

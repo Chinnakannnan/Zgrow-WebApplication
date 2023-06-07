@@ -13,7 +13,9 @@ using Newtonsoft.Json.Linq;
 using System.IO;
 using NeoBankWebApp.Models.Common;
 using Newtonsoft.Json;
-using Microsoft.AspNetCore.Http; 
+using Microsoft.AspNetCore.Http;
+using NeoBankWebApp.Rule_Common;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NeoBankWebApp.Controllers
 { 
@@ -24,7 +26,6 @@ namespace NeoBankWebApp.Controllers
         public LoginController(IAPIService clientServiceInstance) => (_clientService) = (clientServiceInstance);
         public IActionResult Login() {
 
-                       
             if (string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyCaptcha)))
             {
                 Captcha(null);
@@ -41,28 +42,31 @@ namespace NeoBankWebApp.Controllers
            
             string capture = Captcha(null);
            return Json(new { captchaImage = capture });           
-        }      
-        public JsonResult LoginVaildate(string UserName, string Password, string captchaInput)
+        }
+        public ActionResult LoginValidate(string UserName, string Password, string captchaInput)
         {
-            string access_token = string.Empty;
-            string refresh_token = string.Empty;
-            string token_genaration_time = string.Empty;
-            string customer_id = string.Empty;
+            ApiResponse apiResponse = new ApiResponse();
 
             if (string.IsNullOrEmpty(UserName))
-            {
-                return Json("Please Enter UserName");
+            {            
+                TempData["LoginFailedMessage"] = "Please Enter Valid User Name";
+                Captcha(HttpContext.Session.GetString(SessionKeyCaptcha));
+                return View("Login");
             }
             if (string.IsNullOrEmpty(Password))
             {
-                return Json("Please Enter PassWord");
+                TempData["LoginFailedMessage"] = "Please Enter Valid PassWord";
+                Captcha(HttpContext.Session.GetString(SessionKeyCaptcha));
+                return View("Login");
             }
             if (string.IsNullOrEmpty(captchaInput))
             {
-                return Json("Please Enter Captcha");
+                TempData["LoginFailedMessage"] = "Please Enter Valid Captcha";
+                Captcha(HttpContext.Session.GetString(SessionKeyCaptcha));
+                return View("Login");
             }
 
-            string storedCaptchaCode = HttpContext.Session.GetString(SessionKeyCaptcha);     
+            string storedCaptchaCode = HttpContext.Session.GetString(SessionKeyCaptcha);
             bool isValid = !string.IsNullOrEmpty(storedCaptchaCode) &&
                            !string.IsNullOrEmpty(captchaInput) &&
                            string.Equals(storedCaptchaCode, captchaInput, StringComparison.OrdinalIgnoreCase);
@@ -70,12 +74,14 @@ namespace NeoBankWebApp.Controllers
 
             if (!isValid)
             {
-                 return Json("InValid Captcha");
-            }           
+                TempData["LoginFailedMessage"] =   "Captcha validation Failed";
+                Captcha(HttpContext.Session.GetString(SessionKeyCaptcha));
+                return View("Login");
+            }
 
-                LoginRequest login = new LoginRequest();
-                login.UserName = UserName;
-                login.Password = Password;
+            LoginRequest login = new LoginRequest();
+            login.UserName = UserName;
+            login.Password = Password;
 
             using (HttpResponseMessage responseMessages = _clientService.LoginVaildate(login))
             {
@@ -83,44 +89,124 @@ namespace NeoBankWebApp.Controllers
                 {
                     string stream = responseMessages.Content.ReadAsStringAsync().Result.ToString();
                     Tokens tokens = JsonConvert.DeserializeObject<Tokens>(stream);
-                    HttpContext.Session.SetString(access_token, tokens.Access_Token);
-                    HttpContext.Session.SetString(refresh_token, tokens.ToString());
-                    HttpContext.Session.SetString(token_genaration_time, DateTime.Now.ToString());
+                    HttpContext.Session.SetString(Variables.AccessToken, tokens.Access_Token);
+                    HttpContext.Session.SetString(Variables.RefreshToken, tokens.ToString());
+                    HttpContext.Session.SetString(Variables.TokenGenarationTime, DateTime.Now.ToString());
                     //var result = _clientService.UserInfo(login, tokens.Access_Token);
 
                     using (var result = _clientService.UserInfo(login, tokens.Access_Token))
                     {
+                        string custInfo = result.Content.ReadAsStringAsync().Result.ToString();
+                        ApiResponse errorResponse = JsonConvert.DeserializeObject<ApiResponse>(custInfo);   
                         if (responseMessages.IsSuccessStatusCode)
-                        {
-                            string custInfo = result.Content.ReadAsStringAsync().Result.ToString();
-
+                        {    
                             UserInfoResponse custInformations = JsonConvert.DeserializeObject<UserInfoResponse>(custInfo);
-                            HttpContext.Session.SetString(customer_id, custInformations.CustomerId.ToString());
-
-                            if (custInformations.UserType=="1")
+                            HttpContext.Session.SetString(Variables.CustomerID, custInformations.CustomerId.ToString());
+                            HttpContext.Session.SetString(Variables.UserType, custInformations.UserType.ToString());
+                         
+                            HttpContext.Session.SetString(Variables.UserName, custInformations.UserName);
+                            if (custInformations.UserType == "1")
                             {
-                                return Json("superadmin");
+                                return RedirectToAction("Index", "SuperAdmin");
                             }
-
                             if (custInformations.UserType == "2")
                             {
-                                return Json("admin");
+                                return RedirectToAction("Index", "Admin");
 
                             }
                             if (custInformations.UserType == "3")
                             {
-                                return Json("user");
+                                return RedirectToAction("Index", "Home");
                             }
                         }
-                        return Json("");
+                        TempData["LoginFailedMessage"] = errorResponse.StatusDesc;
+                        Captcha(HttpContext.Session.GetString(SessionKeyCaptcha));
+                        return View("Login");
 
                     }
 
                 }
-            }                 
-          
-            return Json("UnExpected Error");
+            }
+            TempData["LoginFailedMessage"] = "Technical error Please Reach Admin";
+            Captcha(HttpContext.Session.GetString(SessionKeyCaptcha));
+            return View("Login");
         }
+        /* public JsonResult LoginVaildate(string UserName, string Password, string captchaInput)
+         {
+
+
+             if (string.IsNullOrEmpty(UserName))
+             {
+                 return Json("Please Enter UserName");
+             }
+             if (string.IsNullOrEmpty(Password))
+             {
+                 return Json("Please Enter PassWord");
+             }
+             if (string.IsNullOrEmpty(captchaInput))
+             {
+                 return Json("Please Enter Captcha");
+             }
+
+             string storedCaptchaCode = HttpContext.Session.GetString(SessionKeyCaptcha);     
+             bool isValid = !string.IsNullOrEmpty(storedCaptchaCode) &&
+                            !string.IsNullOrEmpty(captchaInput) &&
+                            string.Equals(storedCaptchaCode, captchaInput, StringComparison.OrdinalIgnoreCase);
+             HttpContext.Session.Remove(SessionKeyCaptcha);
+
+             if (!isValid)
+             {
+                  return Json("InValid Captcha");
+             }           
+
+                 LoginRequest login = new LoginRequest();
+                 login.UserName = UserName;
+                 login.Password = Password;
+
+             using (HttpResponseMessage responseMessages = _clientService.LoginVaildate(login))
+             {
+                 if (responseMessages.IsSuccessStatusCode)
+                 {
+                     string stream = responseMessages.Content.ReadAsStringAsync().Result.ToString();
+                     Tokens tokens = JsonConvert.DeserializeObject<Tokens>(stream);
+                     HttpContext.Session.SetString(Variables.AccessToken, tokens.Access_Token);
+                     HttpContext.Session.SetString(Variables.RefreshToken, tokens.ToString());
+                     HttpContext.Session.SetString(Variables.TokenGenarationTime, DateTime.Now.ToString());
+                     //var result = _clientService.UserInfo(login, tokens.Access_Token);
+
+                     using (var result = _clientService.UserInfo(login, tokens.Access_Token))
+                     {
+                         if (responseMessages.IsSuccessStatusCode)
+                         {
+                             string custInfo = result.Content.ReadAsStringAsync().Result.ToString();
+
+                             UserInfoResponse custInformations = JsonConvert.DeserializeObject<UserInfoResponse>(custInfo);
+                             HttpContext.Session.SetString(Variables.CustomerID, custInformations.CustomerId.ToString());
+                             HttpContext.Session.SetString(Variables.UserType, custInformations.UserType.ToString());
+                             ViewBag.UserName = custInformations.UserName;
+                             if (custInformations.UserType=="1")
+                             {
+                                 return Json("superadmin");
+                             }
+                             if (custInformations.UserType == "2")
+                             {
+                                 return Json("admin");
+
+                             }
+                             if (custInformations.UserType == "3")
+                             {
+                                 return Json("user");
+                             }
+                         }
+                         return Json("Technical Error");
+
+                     }
+
+                 }
+             }                 
+
+             return Json("UnExpected Error");
+         }*/
         public string Captcha(string RandamCode)
         {
             string captchaCode = string.Empty;

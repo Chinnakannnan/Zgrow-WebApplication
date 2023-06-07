@@ -1,7 +1,4 @@
-﻿$(document).ready(function () {
-    // Clear all JavaScript and reload the page
-    location.reload();
-});
+﻿
 function refreshcaptcha() {
     $.ajax({
         type: 'POST',
@@ -25,15 +22,14 @@ function LoadLogout() {
             contentType: 'application/x-www-form-urlencoded; charset=utf-8',
             success: function () {
                 alert("logout2")
-               // localStorage.setItem("app-logout", 'logout' + Math.random());
-                window.location.href = "/Login/Login";
-                window.location.reload();
+                $('#logoutModal').hide();
+                window.location.href = "/Login/Login"; 
             }
         });
 }
-
  
-function submitLogin() { 
+ 
+/*function submitLogin() { 
 alert("hai")
     var data = $("#loginForm").serialize();    
     $.ajax({
@@ -42,13 +38,20 @@ alert("hai")
         contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
         data: data,
         success: function (result) { 
+            
             alert(result) 
+            alert("hai 2") 
             if (result == 'admin') {
                 window.location.href = "/Admin/Index";
-            } else if (result == 'user') {
+            }
+            else if (result == 'user') {
                 alert("user2")
                 window.location.href = "/Home/Index";
-            }           
+            }
+            else if (result == 'user') {
+                alert("user2")
+                window.location.href = "/Home/Index";
+            }  
             else if (result == '5') {
                 $('#displaydangermessage').text("Account has block temporarily.");
                 $('#alertPopup').modal('show');
@@ -64,4 +67,4 @@ alert("hai")
         }
     })
 }
- 
+ */

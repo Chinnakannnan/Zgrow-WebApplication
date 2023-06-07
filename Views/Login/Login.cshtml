@@ -25,32 +25,12 @@
     <!-- Custom styles for this template-->
     <link href="~/css/portal.css" rel="stylesheet">
     <script src="~/js/site.js"></script>
-
-
+    <script src="~/js/site.js"></script>
 </head>
 
 <body>
-    <div class="top-header shadow">
-        <div class="container">
-            <div class="d-flex align-items-start justify-content-start">
-               @* <a class="header-logo" href="index.html">
-                    <img class="header-logo-img" src="~/img/logo.png" />
-                </a>*@
-            </div>
-        </div>
-    </div>
-    <div class="login_container">
-        <div class="login_banner">
-            <div class="container">
-                <div class="row justify-content-start">
-                    <div class="col-xl-7 col-lg-7 col-md-12 text-light login_banner_content">
-                                           
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    <div class="login_container" >     
+       @using (Html.BeginForm("LoginValidate", "Login", FormMethod.Post, new { @onsubmit = "LoadLoader()" }))
+    {       
     <div class="login_form container">
             @*<div class="row justify-content-end">*@
                 <div class="row justify-content-center">
@@ -58,27 +38,43 @@
                     <div class="card o-hidden border-0 shadow-lg login_card">
                         <div class="card-body p-0">
                             <!-- Nested Row within Card Body -->
+
                             <div class="row">
                                 <div class="col-12">
                                     <div class="pt-5 pr-5 pl-5 pb-2" id="login">
+                                       
                                         <div class="text-center">
                                             <h4 class="text-gray-900 font-weight-bold">Account Login </h4>
                                             <p class="small">
                                                 login with your email / Mobile number
                                             </p>
                                         </div>
+                                        <hr/>
+                                         @if (TempData.ContainsKey("LoginFailedMessage"))
+                                        {
+                                            <div id="loginFailedPopup">
+                                                <div class="popup-content" style="color:red">
+                                                    <p>@TempData["LoginFailedMessage"]</p>
+                                                </div>
+                                            </div>
+                                            <script>
+                                                $(document).ready(function () {
+                                                    $('#loginFailedPopup').show();
+                                                 });
+                                            </script>
+                                        }
                                         <form id="loginForm" class="login">
                                             <div class="form-group mb-3">
                                                 <label class="floating-label">
                                                     <input type="text" class="form-control" id="txtUserName" name="UserName"
-                                                           placeholder="Enter your user id/card number" autocomplete="off">
+                                                           placeholder="Enter your user id/card number" autocomplete="off" required>
                                                     <span class="floating-text">User ID/Card Number</span>
                                                 </label>
                                             </div>
                                             <div class="form-group mb-3">
                                                 <label class="floating-label show_hide_password">
                                                     <input type="password" class="form-control form-control-user" id="txtPassword" name="Password"
-                                                           placeholder="Enter your password" autocomplete="off">
+                                                           placeholder="Enter your password" autocomplete="off" required>
                                                     <span class="floating-text">
                                                         Password <span class="mandatory">*</span>
                                                     </span>
@@ -89,17 +85,21 @@
                                           
                                             <br>
                                             <label for="captchaInput">Enter the CAPTCHA code:</label>
-                                            <input type="text" id="captchaInput" name="captchaInput">
+                                            <input type="text" id="captchaInput" name="captchaInput" required>
                                             <div class="form-group">
                                                 <div class="custom-control custom-checkbox small">
                                                     <input type="checkbox" class="custom-control-input"
                                                            id="customCheck"> 
                                                 </div>
-                                            </div>
-                                                     <button  class="btn btn-primary btn-block bg-gradient-primary btn-large"
+                                            </div><hr />
+                                                     @*<button  class="btn btn-primary btn-block bg-gradient-primary btn-large"
                                             onclick="submitLogin()">
                                             Login
-                                            </button> 
+                                            </button> *@
+                                           
+                                            <button type="submit" class="btn btn-primary btn-block bg-gradient-primary btn-large">
+                                                Login
+                                            </button>
                                         </form>                                      
                                         <hr>
                                       
@@ -113,33 +113,7 @@
             </div>
 
         </div>
-
-    </div>
-  @*  <div class="welcome_text my-5">
-        <div class="container">
-            <h3 class="text-primary">Welcome to Zgrow Payment solutions</h3>
-            <p>
-                <b>We help business grow organically and foster a consumer-first mindset.</b><br/>
-                Zgrow Solutions Private Limited is a Cloud & AI technology-driven company,<br /> with its own proprietary Business automation & Web / Mobile / Cloud Develoment, <br />AI solutions making financial transaction automation process and <br /> Payroll absolutely safe and convenient for SMEs.<br /> Our automation platform is easy to access and can operate from <br />any geographical region or area in India
-            </p>
-        </div>
-    </div>*@
-
-    <div class="modal fade" id="alertPopup" tabindex="-1" role="dialog"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="d-flex justify-content-center my-4">
-                    <i class="fas fa-check-circle text-danger" style="font-size:72px"></i>
-                </div>
-                <div id="displaydangermessage" class="modal-body text-center"></div>
-                <div class="modal-footer align-self-center">
-                    <button class="btn btn-secondary btn-lg" type="button" data-dismiss="modal">Ok</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
+     }  
     <!-- Bootstrap core JavaScript-->
     <script src="~/vendor/jquery/jquery.min.js"></script>
     <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -149,7 +123,7 @@
     <script src="~/js/portal.js"></script>
     <!-- Custom scripts for all pages-->
     <script src="~/js/login.js"></script>
-
+    <script src="~/js/rightclickdisable.js"></script>
 </body>
 
 
