@@ -1,0 +1,140 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+ <div id="paginationContainer">
+    <ul class="pagination"></ul>
+    <div class="row justify-content-center" style="margin-top:30px;">
+
+        <div class="col-lg-12 col-12">
+            <div class="card shadow mb-4">
+                <div class="card-body">                
+                   <div class="row justify-content-center" style="margin-top:30px;"> 
+                       <div class="col-lg-12 col-12">
+                            <div class="card shadow mb-4">
+                                <div class="card-body">
+                                    <div>
+                                        <input type="radio" name="report" value="1" /> PayOut Report &nbsp;&nbsp;
+                                        <input type="radio" name="report" value="2" /> Payment Gateway Report
+                                    </div>
+                                    <hr />
+                                    <!-- Base Style table start -->
+                                    <div class="col-12">
+                                        <h5 class="text-primary font-weight-bold">Transaction Details </h5>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label class="floating-label">
+                                                    <span class="floating-text">From Date</span>
+                                                    <input type="date" id="startDate" required>
+                                                </label>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="floating-label ">
+                                                    <span class="floating-text">To Date</span>
+                                                    <input type="date" id="endDate" required>
+                                                </label>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <button type="submit" id="btnSubmit" class="btn btn-primary px-3 ml-md-3">Submit</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                          <div class="card shadow mb-4">
+                                        <div class="card-body">
+                                <div class="table-responsive pagination">
+                                    <table class="table table-bordered customerTransactions w-100" id="myTable"
+                                                       data-filter="false" data-page-length="10" data-length-change="false" data-info="false" cellspacing="0">
+                                                    <thead>
+                                                        <tr role="row">
+                                                <th class="tablehead sorting sorting_asc" tabindex="0" aria-controls="transactionStatement" rowspan="1" colspan="1" aria-label="Transaction ID: activate to sort column descending" style="width: 90.2079px;" aria-sort="ascending">Customer ID</th>
+                                                <th class="tablehead sorting" tabindex="0" aria-controls="transactionStatement" rowspan="1" colspan="1" aria-label="Transaction Date: activate to sort column ascending" style="width: 269.200px;">Reference ID</th>
+                                                            <th class="tablehead sorting" tabindex="0" aria-controls="transactionStatement" rowspan="1" colspan="1" aria-label="Description: activate to sort column ascending" style="width: 196.208px;">Mobile Number</th>
+                                                            <th style="min-width: 90px; width: 90.2079px;" class="tablehead sorting" tabindex="0" aria-controls="transactionStatement" rowspan="1" colspan="1" aria-label="Credits: activate to sort column ascending">Amount</th>
+                                                            <th style="min-width: 90px; width: 90.2079px;" class="tablehead sorting" tabindex="0" aria-controls="transactionStatement" rowspan="1" colspan="1" aria-label="Debits: activate to sort column ascending">Mail</th>
+                                                            <th style="min-width: 90px; width: 90.2079px;" class="tablehead sorting" tabindex="0" aria-controls="transactionStatement" rowspan="1" colspan="1" aria-label="Balance: activate to sort column ascending">Status</th>
+                                                <th style="min-width: 90px; width: 90.2079px;" class="tablehead sorting" tabindex="0" aria-controls="transactionStatement" rowspan="1" colspan="1" aria-label="Balance: activate to sort column ascending">Created Time</th>
+
+                                            </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                    </tbody>
+                                                </table>
+                                    <div id="pagination" class="pagination-container">
+                                        <ul id="pagination-list" class="pagination"></ul>
+                                    </div>
+                                </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+
+
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+
+<script> 
+    $(document).ready(function () {
+        
+        var currentDate = new Date().toISOString().slice(0, 10);
+        $('#startDate').val(currentDate);
+        $('#endDate').val(currentDate);
+
+        $("#btnSubmit").click(function () {
+             
+            var selectedreport = $("input[name='report']:checked").val();
+            if (selectedreport==null)
+            {
+            alert("Please select what report you need!..");
+            return;
+            }
+            var startDate = $("#startDate").val();
+            var endDate = $("#endDate").val();
+            data = { SelectedReport: selectedreport, FromDate: startDate, ToDate: endDate }
+            $.ajax({
+                url:'/Report/Report',
+                method: 'POST',
+                data: data,
+                success: function (response) {           
+                    var data = response;
+                    alert(response)
+                    if (response=="1") {
+                        alert("Please Enter Proper Value")
+                        return;
+                    }
+                    $('#myTable tbody').empty();
+                    $.each(data, function (index, item) {                      
+                            var row = $("<tr></tr>");                      
+                            row.append("<td>" + item.customerId + "</td>");
+                            row.append("<td>" + item.reference_Id + "</td>");
+                            row.append("<td>" + item.beneMobileNumber + "</td>");
+                            row.append("<td>" + item.amount + "</td>");
+                            row.append("<td>" + item.mailId + "</td>");
+                            row.append("<td>" + item.transactionStatus + "</td>");
+                            row.append("<td>" + item.createdTime + "</td>");                        
+                            $("#myTable tbody").append(row);
+                        });                     
+                },
+                error: function (xhr, status, error) { 
+                }
+            });
+
+        });
+    });
+
+</script>

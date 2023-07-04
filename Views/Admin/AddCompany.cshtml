@@ -1,0 +1,507 @@
+﻿@model NeoBankWebApp.Models.Admin.AddCompany
+
+@{
+    ViewData["Title"] = "AddCompany";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+ <style>
+        .form {
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 1120px;
+        }
+
+    .popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 10px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        z-index: 9999;
+    }
+
+    .success {
+        background-color: darkgreen;
+    }
+
+    .failure {
+        background-color: red
+    }
+
+         </style>
+
+<div id="successPopup" class="popup success"> 
+        <div class="modal-content">
+            <div class="modal-content">
+                <div class="modal-body text-center" style="font-size:20px"><p>Company onboarded Successfully</p></div>
+            </div> 
+    </div>
+</div>
+
+<div id="failurePopup" class="popup failure">
+      <div class="modal-content">           
+            <div class="modal-body text-center" style="font-size:20px"><p>@TempData["StatusDesc"]</p></div>           
+      </div> 
+</div>
+
+
+
+
+<div id="paginationContainer">
+    <ul class="pagination"></ul>
+    <div class="row justify-content-center" style="margin-top:30px;">       
+
+        <div class="col-lg-12 col-12">
+            <div class="card shadow mb-4">
+                <div class="card-body"> 
+                    <div class="col-12">
+                        <h5 class="text-primary font-weight-bold">Company OnBoarding </h5> <hr />                        
+                       
+                        @using (Html.BeginForm("CompanyOnBoard", "Admin", FormMethod.Post, new { @onsubmit = "LoadLoader()" }))
+                        {
+                                      <h6 class="text-primary font-weight-bold">Basic Information </h6> <hr />
+                                <div class="row">
+                                    <div class=' col-sm-4'>
+                                        <div><label>Company Name</label> <span class="messages" style="color: red;"> *</span></div>
+                                        <div>
+                                            @Html.TextBoxFor(m => m.CompanyName, new
+                                        {
+                                        @Required = "",
+                                        @placeholder = "Enter Company Name",
+                                        @autocomplete = "off",
+                                        @id = "CompanyName",
+                                        editable = false,
+                                    @onkeypress = "return AllowCustomFormat(this.event,'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ')",
+                                        @class = "form-control",
+                                    @minlength = "5",
+                                        @maxlength = "50"
+                                        })
+                                        </div>
+                                    </div>
+                                    <div class=' col-sm-4'>
+                                        <div><label>Contact Person</label> <span class="messages" style="color: red;">*</span></div>
+                                        <div>
+
+                                            @Html.TextBoxFor(m => m.ContactPerson, new
+                                        {
+                                        @Required = "",
+                                        @placeholder = "Enter official contact person name",
+                                        @autocomplete = "off",
+                                        @id = "ContactPerson",
+                                        editable = false,
+                                    @onkeypress = "return AllowCustomFormat(this.event,'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ ')",
+                                        @class = "form-control",
+                                        @minlength = "5",
+                                        @maxlength = "50"
+                                        })
+                                        </div>
+                                    </div>
+                                    <div class=' col-sm-4'>
+                                        <div><label>Contact Email</label> <span class="messages" style="color: red;"> *</span></div>
+                                        <div>
+
+                                            @Html.TextBoxFor(m => m.ContactEmail, new
+                                        {
+                                        @Required = "",
+                                        @placeholder = "Enter Email",
+                                        @autocomplete = "off",
+                                        @id = "ContactEmail",
+                                        editable = false,
+                                        @onkeypress = "return AllowCustomFormat(this.event,'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*_-0123456789')",
+                                        @class = "form-control",
+                                        @minlength = "9",
+                                        @maxlength = "50"
+                                        })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class=' col-sm-4'>
+                                        <div><label>Contact Number</label> <span class="messages" style="color: red;"> *</span></div>
+                                        <div>
+
+                                            @Html.TextBoxFor(m => m.ContactMobile1, new
+                                        {
+                                        @Required = "",
+                                        @placeholder = "Enter Contact Number",
+                                        @autocomplete = "off",
+                                        @id = "ContactMobile1",
+                                        editable = false,
+                                        @onkeypress = "return AllowCustomFormat(this.event,'0123456789')",
+                                        @class = "form-control",
+                                        @minlength = "10",
+                                        @maxlength = "10"
+                                        })
+                                        </div>
+                                    </div>
+                                    <div class=' col-sm-4'>
+                                        <div><label>Alternative Number</label> <span class="messages" style="color: red;"> *</span></div>
+                                        <div>
+
+                                            @Html.TextBoxFor(m => m.ContactMobile2, new
+                                        {
+                                        @Required = "",
+                                        @placeholder = "Enter Alternative Number",
+                                        @autocomplete = "off",
+                                        @id = "ContactMobile2",
+                                        editable = false,
+                                        @onkeypress = "return AllowCustomFormat(this.event,'0123456789')",
+                                        @class = "form-control",
+                                    @minlength = "10",
+                                    @maxlength = "10"
+                                        })
+                                        </div>
+                                    </div>
+                                    <div class=' col-sm-4'>
+                                        <div><label>Website</label></div>
+                                        <div>
+
+                                            @Html.TextBoxFor(m => m.WebURL, new
+                                        {
+                                        @placeholder = "Enter Website if it is available",
+                                        @autocomplete = "off",
+                                        @id = "WebURL",
+                                        editable = false,
+                                        @class = "form-control",
+                                        @maxlength = "50"
+                                        })
+                                        </div>
+                                    </div>
+                            </div>
+
+                            <br>
+                            <h6 class="text-primary font-weight-bold">Address Information </h6> <hr />
+                                <div class="row">
+                                    <div class=' col-sm-4'>
+                                        <div><label>Address Line 1</label> <span class="messages" style="color: red;"> *</span></div>
+                                        <div>
+
+                                        @Html.TextBoxFor(m => m.Address1, new
+                                        {
+                                        @Required = "",
+                                        @placeholder = "Enter Addres Line 1",
+                                        @autocomplete = "off",
+                                        @id = "Address1",
+                                        editable = false,
+                                        @onkeypress = "return AllowCustomFormat(this.event,'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789')",
+                                        @class = "form-control",
+                                        @maxlength = "50"
+                                        })
+                                        </div>
+                                    </div>
+                                    <div class=' col-sm-4'>
+                                        <div><label>AddressLine 2</label></div>
+                                        <div>
+
+                                            @Html.TextBoxFor(m => m.Address2, new
+                                        {
+                                        @placeholder = "Enter Addres Line 2",
+                                        @autocomplete = "off",
+                                        @id = "Address2",
+                                        editable = false,
+                                        @onkeypress = "return AllowCustomFormat(this.event,'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789')",
+                                        @class = "form-control",
+                                        @maxlength = "50"
+                                        })
+                                        </div>
+                                    </div>
+                                    <div class=' col-sm-4'>
+                                        <div><label>Address Line 3</label></div>
+                                        <div>
+
+                                            @Html.TextBoxFor(m => m.Address3, new
+                                        {
+                                        @placeholder = "Enter Addres Line",
+                                        @autocomplete = "off",
+                                        @id = "Address3",
+                                        editable = false,
+                                        @onkeypress = "return AllowCustomFormat(this.event,'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789')",
+                                        @class = "form-control",
+                                        @maxlength = "50"
+                                        })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class='col-sm-4'>
+                                        <div><label>PinCode</label> <span class="messages" style="color: red;"> *</span></div>
+                                        <div>
+
+                                            @Html.TextBoxFor(m => m.PinCode, new
+                                        {
+                                        @Required = "",
+                                        @placeholder = "Enter Pin Code",
+                                        @autocomplete = "off",
+                                        @id = "name1",
+                                        editable = false,
+                                        @onkeypress = "return AllowCustomFormat(this.event,'0123456789')",
+                                        @class = "form-control",
+                                        @minlength = "6",
+                                        @maxlength = "6"
+                                        })
+                                        </div>
+                                    </div>
+
+                                    <div class=' col-sm-4'>
+                                        <div><label>City</label> <span class="messages" style="color: red;"> *</span></div>
+                                        <div>
+
+                                            @Html.TextBoxFor(m => m.City, new
+                                        {
+                                        @Required = "",
+                                        @placeholder = "Enter City",
+                                        @autocomplete = "off",
+                                        @id = "City",
+                                        editable = false,
+                                        @onkeypress = "return AllowCustomFormat(this.event,'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')",
+                                        @class = "form-control",
+                                        @maxlength = "50"
+                                        })
+                                        </div>
+                                    </div>
+                                    <div class=' col-sm-4'>
+                                        <div><label>State</label> <span class="messages" style="color: red;"> *</span></div>
+                                        <div>
+
+                                            @Html.TextBoxFor(m => m.State, new
+                                        {
+                                        @Required = "",
+                                        @placeholder = "",
+                                        @autocomplete = "off",
+                                        @id = "name1",
+                                        editable = false,
+                                        @onkeypress = "return AllowCustomFormat(this.event,'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789')",
+                                        @class = "form-control",
+                                        @maxlength = "50"
+                                        })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class=' col-sm-4'>
+                                        <div><label>Country</label> <span class="messages" style="color: red;"> *</span></div>
+                                        <div>
+
+                                            @Html.TextBoxFor(m => m.Country, new
+                                        {
+                                        @Required = "",
+                                        @placeholder = "",
+                                        @autocomplete = "off",
+                                        @id = "name1",
+                                        editable = false,
+                                        @onkeypress = "return AllowCustomFormat(this.event,'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789')",
+                                        @class = "form-control",
+                                        @maxlength = "50"
+                                        })
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                             <br> <h6 class="text-primary font-weight-bold">Proof Information </h6> <hr />
+                                <div class="row">
+                                <div class=' col-sm-4'>
+                                    <div><label>Aadhar Number</label> <span class="messages" style="color: red;"> *</span></div>
+                                    <div>
+
+                                        @Html.TextBoxFor(m => m.AadharNumber, new
+                                    {
+                                    @Required = "",
+                                    @placeholder = "",
+                                    @autocomplete = "off",
+                                    @id = "",
+                                    editable = false,
+                                    @onkeypress = "return AllowCustomFormat(this.event,'0123456789')",
+                                    @class = "form-control",
+                                    @minlength = "12",
+                                    @maxlength = "12"
+                                    })
+                                    </div>
+                                </div>
+                                 
+                                <div class=' col-sm-4'>
+                                    <div><label>Upload Aadhar Copy Front Side</label> <span class="messages" style="color: red;"> *</span><span class="messages"> (Allow only .jpeg and .jpg format)</span></div>
+                                    <div>
+                                        <input type="file" name="AadharFront" id="AadharFront" accept=".jepg,.jpg" required />
+
+                                        <input type="hidden" name="AadharDocumentFront" id="AadharDocumentFront" />
+                                    </div><br>
+                                    <div><label>Upload Aadhar Copy Back Side</label> <span class="messages" style="color: red;"> *</span><span class="messages"> (Allow only .jpeg and .jpg format)</span></div>
+                                    <div>
+                                        <input type="file" name="AadharBack" id="AadharBack" accept=".jepg,.jpg" required />
+
+                                        <input type="hidden" name="AadharDocumentBack" id="AadharDocumentBack" />
+                                    </div>
+                                </div>
+                                <div class=' col-sm-4'>
+                                    <img id="previewAadharImageFront" src="#" alt="Preview Image" width="150" height="60" /><br>
+                                    <img id="previewAadharImageBack" src="#" alt="Preview Image" width="150" height="60" />
+                                </div>
+
+                            </div><br>
+                            <div class="row">
+                                <div class=' col-sm-4'>
+                                    <div><label>PAN Number</label> <span class="messages" style="color: red;"> *</span></div>
+                                    <div>
+
+                                        @Html.TextBoxFor(m => m.PANNumber, new
+                                    {
+                                    @Required = "",
+                                    @placeholder = "",
+                                    @autocomplete = "off",
+                                    @id = "",
+                                    editable = false,
+                                    @onkeypress = "return AllowCustomFormat(this.event,'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')",
+                                    @class = "form-control",
+                                    @minlength = "10",
+                                    @maxlength = "10"
+                                    })
+                                    </div>
+                                </div>
+                            
+                                <div class=' col-sm-4'>
+                                    <div><label>Upload PAN Copy</label> <span class="messages" style="color: red;"> *</span><span class="messages"> (Allow only .jpeg and .jpg format)</span></div>
+                                    <div>
+                                        <input type="file" name="PANDocumentData" id="PANDocumentData" accept=".jepg,.jpg" required />
+
+                                        <input type="hidden" name="PANDocument" id="PANDocument"/>
+                                    </div>
+                                </div>
+
+                                <div class=' col-sm-4'>
+                                    <img id="previewPANImage" src="#" alt="Preview Image" width="150" height="60" />
+                                </div>
+                            </div>
+
+                            <hr />
+                                <button type="submit" id="btnsubmit" class="btn btn-primary px-3 ml-md-3">Submit</button>
+
+                        }
+                             
+                      
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+
+</div>
+
+
+
+<!-- Bootstrap core JavaScript-->
+<script src="~/vendor/jquery/jquery.min.js"></script>
+<script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="~/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="~/js/portal.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script>
+    $(document).ready(function () {
+
+        $('#PANDocumentData').change(function () {
+                var file = this.files[0];
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var img = new Image();
+                    img.onload = function () {
+                        var canvas = document.createElement('canvas');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        var context = canvas.getContext('2d');
+                        context.drawImage(img, 0, 0);
+                        var imageDataURL = canvas.toDataURL('image/jpeg'); // Convert the image to a string
+
+          
+
+                        // Assign the image string to a specific element by ID
+                    $('#previewPANImage').attr('src', imageDataURL);
+                    // Assign the image string to a specific element by ID
+                    $('#PANDocument').val(imageDataURL); 
+
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+       
+
+        $('#AadharFront').change(function () {
+            var file = this.files[0];
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var img = new Image();
+                img.onload = function () {
+                    var canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    var context = canvas.getContext('2d');
+                    context.drawImage(img, 0, 0);
+                    var imageDataURL = canvas.toDataURL('image/jpeg'); // Convert the image to a string
+
+                    // Assign the image string to a specific element by ID
+                    $('#previewAadharImageFront').attr('src', imageDataURL);
+                    // Assign the image string to a specific element by ID
+                    $('#AadharDocumentFront').val(imageDataURL);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+        $('#AadharBack').change(function () {
+            var file = this.files[0];
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var img = new Image();
+                img.onload = function () {
+                    var canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    var context = canvas.getContext('2d');
+                    context.drawImage(img, 0, 0);
+                    var imageDataURL = canvas.toDataURL('image/jpeg'); // Convert the image to a string
+
+                    // Assign the image string to a specific element by ID
+                    $('#previewAadharImageBack').attr('src', imageDataURL);
+                    // Assign the image string to a specific element by ID
+                    $('#AadharDocumentBack').val(imageDataURL);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+
+
+
+
+
+
+
+        var successPopup = $('#successPopup');
+        var failurePopup = $('#failurePopup');
+
+        var tempData = '@TempData["StatusCode"]';
+
+        if (tempData !== '') {
+            if (tempData === '000') {
+                successPopup.fadeIn().delay(6000).fadeOut();
+            } else {
+                failurePopup.fadeIn().delay(6000).fadeOut();
+            }
+        }
+    });
+</script>
+<!-- Custom scripts for all pages-->

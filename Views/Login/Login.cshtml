@@ -1,5 +1,4 @@
-﻿ 
-@{
+﻿@{
     Layout = null;
 }
 
@@ -25,15 +24,14 @@
     <!-- Custom styles for this template-->
     <link href="~/css/portal.css" rel="stylesheet">
     <script src="~/js/site.js"></script>
-    <script src="~/js/site.js"></script>
 </head>
 
 <body>
-       @using (Html.BeginForm("LoginValidate", "Login", FormMethod.Post, new { @onsubmit = "LoadLoader()" }))
-    {       
-    <div class="login_form container">
+    @using (Html.BeginForm("LoginValidate", "Login", FormMethod.Post, new { @onsubmit = "LoadLoader()" }))
+    {
+        <div class="login_form container">
             @*<div class="row justify-content-end">*@
-                <div class="row justify-content-center">
+            <div class="row justify-content-center">
                 <div class=" col-xl-5 col-lg-5 col-md-12">
                     <div class="card o-hidden border-0 shadow-lg login_card">
                         <div class="card-body p-0">
@@ -42,15 +40,15 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="pt-5 pr-5 pl-5 pb-2" id="login">
-                                       
+
                                         <div class="text-center">
                                             <h4 class="text-gray-900 font-weight-bold">Account Login </h4>
                                             <p class="small">
                                                 login with your email / Mobile number
                                             </p>
                                         </div>
-                                        <hr/>
-                                         @if (TempData.ContainsKey("LoginFailedMessage"))
+                                        <hr />
+                                        @if (TempData.ContainsKey("LoginFailedMessage"))
                                         {
                                             <div id="loginFailedPopup">
                                                 <div class="popup-content" style="color:red">
@@ -60,7 +58,7 @@
                                             <script>
                                                 $(document).ready(function () {
                                                     $('#loginFailedPopup').show();
-                                                 });
+                                                });
                                             </script>
                                         }
                                         <form id="loginForm" class="login">
@@ -82,38 +80,38 @@
                                                 </label>
                                             </div>
                                             <img src="data:image/png;base64,@ViewBag.CaptchaImage" alt="CAPTCHA Image" style="width: 100px; height: 50px;" id="captchadefault"> <span><a href="#" onclick="refreshcaptcha()">Refresh</a></span>
-                                          
+
                                             <br>
                                             <label for="captchaInput">Enter the CAPTCHA code:</label>
                                             <input type="text" id="captchaInput" name="captchaInput" required>
                                             <div class="form-group">
                                                 <div class="custom-control custom-checkbox small">
                                                     <input type="checkbox" class="custom-control-input"
-                                                           id="customCheck"> 
+                                                           id="customCheck">
                                                 </div>
                                             </div><hr />
-                                                     @*<button  class="btn btn-primary btn-block bg-gradient-primary btn-large"
-                                            onclick="submitLogin()">
-                                            Login
-                                            </button> *@
-                                           
+                                            @*<button  class="btn btn-primary btn-block bg-gradient-primary btn-large"
+                                        onclick="submitLogin()">
+                                        Login
+                                        </button> *@
+
                                             <button type="submit" class="btn btn-primary btn-block bg-gradient-primary btn-large">
                                                 Login
                                             </button>
-                                        </form>                                      
+                                        </form>
                                         <hr>
-                                      
+
                                     </div>
-                                 </div>
+                                </div>
                             </div>
                         </div>
-                     </div>
+                    </div>
 
                 </div>
             </div>
 
         </div>
-     }  
+    }
     <!-- Bootstrap core JavaScript-->
     <script src="~/vendor/jquery/jquery.min.js"></script>
     <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -124,7 +122,9 @@
     <!-- Custom scripts for all pages-->
     <script src="~/js/login.js"></script>
     <script src="~/js/rightclickdisable.js"></script>
-</body>
 
+
+
+</body>
 
 </html>

@@ -1,5 +1,5 @@
 ﻿
-function refreshcaptcha() {
+function refreshcaptcha() { 
     $.ajax({
         type: 'POST',
         url: '/Login/CaptchaRefresh',
@@ -12,7 +12,7 @@ function refreshcaptcha() {
 }
  
 
-function LoadLogout() {
+/*function LoadLogout() {
     alert("logout")
     $.ajax(
         {
@@ -27,7 +27,7 @@ function LoadLogout() {
             }
         });
 }
- 
+ */
  
 /*function submitLogin() { 
 alert("hai")

@@ -1,32 +1,33 @@
-using NeoBankWebApp.API_Service; 
+using Autofac.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using NeoBankWebApp;
 
-var builder = WebApplication.CreateBuilder(args);
-// Add services to the container.
-builder.Services.AddControllersWithViews();
-builder.Services.AddHttpClient<IAPIService, APIService>();
-builder.Services.AddTransient<IAPIService, APIService>(); 
-builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession(options =>
-{options.IdleTimeout = TimeSpan.FromMinutes(10);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-});  
-var app = builder.Build();
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+
+namespace NeoBankWebApp
 {
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            CreateHostBuilder(args).Build().Run();
+        }
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder
+                    .UseContentRoot(Directory.GetCurrentDirectory())
+                    .UseIISIntegration()
+                    .UseStartup<Startup>();
+                });
+    }
 }
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-app.UseRouting();
-
-app.UseSession();
-app.UseAuthorization();
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Login}/{action=Login}/{id?}");
-
-app.Run();

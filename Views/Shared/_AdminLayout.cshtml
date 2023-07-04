@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Admin - Dashboard</title>
+    <title>Admin Login</title>
     <link href="~/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="~/css/portal.css" rel="stylesheet" />
     <link href="~/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
@@ -17,13 +17,13 @@
 
 </head>
 <body>
-    <div class="top-header">
-        <div class="d-flex align-items-start justify-content-start">
-            <a class="header-logo" href=@Url.Action("Index", "Home")>
-                <img class="header-logo-img" src="~/img/logo.png" />
-            </a>
-        </div>
+    @*  <div class="top-header">
+    <div class="d-flex align-items-start justify-content-start">
+    <a class="header-logo" href=@Url.Action("Index", "Home")>
+    <img class="header-logo-img" src="~/img/logo.png" />
+    </a>
     </div>
+    </div>*@
     <!-- Topbar -->
     <nav class="navbar navbar-expand navbar-light bg-white topbar static-top shadow">
 
@@ -31,19 +31,26 @@
         <button id="sidebarToggleTop" class="btn btn-link rounded-circle mr-3">
             <i class="fa fa-bars"></i>
         </button>
-
+        <div class="d-flex align-items-start justify-content-start">
+            <a class="header-logo" href=@Url.Action("Index", "Home")>
+                <img class="header-logo-img" src="~/img/logo.png" />
+            </a>
+        </div>
         <!-- Topbar Search -->
-        <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-            <div class="input-group">
-                <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-                       aria-label="Search" aria-describedby="basic-addon2">
-                <div class="input-group-append">
-                    <button class="btn btn-primary" type="button">
-                        <i class="fas fa-search fa-sm"></i>
-                    </button>
-                </div>
-            </div>
-        </form>
+        @*  <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+        <div class="input-group">
+        <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+        aria-label="Search" aria-describedby="basic-addon2">
+        <div class="input-group-append">
+        <button class="btn btn-primary" type="button">
+        <i class="fas fa-search fa-sm"></i>
+        </button>
+        </div>
+        </div>
+        </form>*@
+
+        <Marquee>Welcome to Zgrow's payment portal</Marquee><br />
+
 
         <!-- Topbar Navbar -->
         <ul class="navbar-nav ml-auto">
@@ -77,7 +84,7 @@
             <li class="nav-item dropdown no-arrow">
                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false">
-                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">@ViewBag.Admin</span>
+                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">Hi, @Context.Session.GetString("user_name")</span>
                     <img class="img-profile rounded-circle" src="~/img/undraw_profile.svg">
                 </a>
                 <!-- Dropdown - User Information -->
@@ -103,7 +110,7 @@
             </li>
 
         </ul>
-
+        <hr style="color:darkgreen" />
     </nav>
     <!-- End of Topbar -->
     <!-- Page Wrapper -->
@@ -117,23 +124,38 @@
                     <span>Dashboard</span>
                 </a>
             </li>
-            <li class="nav-item active">
-                <a class="nav-link" href=@Url.Action("AddKitData", "Admin")>
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>KIT Details</span>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAdmin"
+                   aria-expanded="true" aria-controls="collapseAdmin">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Registration</span>
                 </a>
-            </li>    
+                <div id="collapseAdmin" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="@Url.Action("AddCompany", "Admin")">Company Registration</a>
+                        <a class="collapse-item" href="@Url.Action("AddUser", "Admin")">User Registration</a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse"
+                   aria-expanded="true" aria-controls="collapse">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>API</span>
+                </a>
+                <div id="collapse" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="@Url.Action("AdminView", "Admin")">Add API</a>
+                        <a class="collapse-item" href="@Url.Action("CardDetails", "Admin")">View API List</a>
+                        <a class="collapse-item" href="@Url.Action("Fund", "Admin")">API Access</a>
+                        <a class="collapse-item" href="@Url.Action("Fund", "Admin")">API Access List</a>
+                    </div>
+                </div>
+            </li>
             <li class="nav-item active">
                 <a class="nav-link" href=@Url.Action("Transactions", "Admin")>
                     <i class="fas fa-fw fa-file-invoice"></i>
                     <span>Transaction</span>
-                </a>
-            </li>
-
-            <li class="nav-item active">
-                <a class="nav-link" href=@Url.Action("UserRegistrationView", "UserRegistration")>
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>User Registration</span>
                 </a>
             </li>
 
@@ -144,24 +166,28 @@
         </main>
     </div>
     <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" onclick="LoadLogout()">Logout</a>
+    @using (Html.BeginForm("Signout", "Login", FormMethod.Post, new { @onsubmit = "LoadLoader()" }))
+    {
+        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary btn-block bg-gradient-primary btn-large">
+                            Logout
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    }
     <!-- Bootstrap core JavaScript-->
     <script src="~/vendor/jquery/jquery.min.js"></script>
     <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

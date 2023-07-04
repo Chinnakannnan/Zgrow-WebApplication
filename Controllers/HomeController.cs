@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NeoBankWebApp.Models;
+using NeoBankWebApp.Rule_Common;
 using System.Diagnostics;
 
 namespace NeoBankWebApp.Controllers
@@ -16,7 +17,12 @@ namespace NeoBankWebApp.Controllers
         }
 
         public IActionResult Index()
-        {
+        { 
+            if (HttpContext.Session.GetString(Variables.UserType) != "3")
+                return RedirectToAction("Login", "Login");
+            if (HttpContext.Session.GetString(Variables.CustomerID) == null)
+                return RedirectToAction("Login", "Login");
+
             return View();
         }
 

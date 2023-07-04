@@ -1,0 +1,48 @@
+﻿@{
+    ViewData["Title"] = "Link";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+ 
+<div id="paginationContainer">
+    <ul class="pagination"></ul>
+    <div class="row justify-content-center" style="margin-top:30px;">
+
+        <div class="col-lg-12 col-12">
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <!-- Base Style table start -->
+                    <div class="col-12"> 
+                            <h5 class="text-primary font-weight-bold">Payment Gateway Link </h5> <hr />
+
+                        <a href="@ViewBag.Link" id="shareLink">@ViewBag.Link</a>
+
+                        <script>
+                            var shareLink = document.getElementById("shareLink");
+                            shareLink.addEventListener("click", function (event) {
+                                event.preventDefault();
+                                var textToCopy = shareLink.getAttribute("href");
+                                navigator.clipboard.writeText(textToCopy)
+                                    .then(function () {
+                                        alert("Link copied to clipboard!");
+                                    })
+                                    .catch(function (error) {
+                                        console.error("Failed to copy link: ", error);
+                                    });
+                            });
+                        </script>
+
+
+
+
+
+
+
+                    </div>
+                </div>
+            </div> 
+
+        </div>
+    </div>
+
+</div>
+ 

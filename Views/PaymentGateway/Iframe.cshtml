@@ -1,0 +1,36 @@
+﻿
+@{
+    ViewData["Title"] = "Iframe";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*<script>
+
+
+
+    $(document).ready(function () {
+        alert("hai")
+
+        var newWindow = window.open('@ViewBag.Link', '_blank');
+        newWindow.location.reload(); 
+
+        return;
+
+    });
+
+
+
+</script>
+<script type="text/javascript" src="https://ebz-static.s3.ap-south-1.amazonaws.com/easecheckout/easebuzz-checkout.js"></script>*@
+
+<div id="paginationContainer">
+     <div class="row justify-content-center" style="margin-top:30px;">
+
+ 
+        <iframe src=@ViewBag.Link width="1000" height="750"  ></iframe>
+     </div>
+</div>
+
+
+
+
