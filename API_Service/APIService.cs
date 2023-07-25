@@ -41,12 +41,13 @@ namespace NeoBankWebApp.API_Service
 
         }
 
-        public HttpResponseMessage UserInfo(LoginRequest requestBody, string token)
+        public HttpResponseMessage UserInfo(LoginRequest requestBody, string token, string CustomerID)
         {
             try
             {               
                 var stringContent = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, Constants.ApplicationJson);
-                _client.DefaultRequestHeaders.Add("Authorization", "Bearer "+ token); 
+                _client.DefaultRequestHeaders.Add("Authorization", "Bearer "+ token);
+                _client.DefaultRequestHeaders.Add("CustomerID", CustomerID);
                 return _client.PostAsync(Constants.GetUserInformation, stringContent).Result;
 
             }
@@ -57,13 +58,14 @@ namespace NeoBankWebApp.API_Service
 
         }
 
-        public HttpResponseMessage InitiatePayment(PaymentInitiate requestBody, string token)
+        public HttpResponseMessage InitiatePayment(PaymentInitiate requestBody, string token, string CustomerID)
         {
             try
             {
                 var stringContent = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, Constants.ApplicationJson);
                 _client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
                 _client.DefaultRequestHeaders.Add("CompanyCode", Constants.CompanyCode);
+                _client.DefaultRequestHeaders.Add("CustomerID", CustomerID);
                 return _client.PostAsync(Constants.PaymentInitiate, stringContent).Result;
             }
             catch (Exception ex)
@@ -73,12 +75,13 @@ namespace NeoBankWebApp.API_Service
        
         }
        
-        public HttpResponseMessage PaymentGatewatReport(ConvertedRequest requestBody, string token)
+        public HttpResponseMessage PaymentGatewatReport(ConvertedRequest requestBody, string token, string CustomerID)
         {
             try
             {
                 var stringContent = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, Constants.ApplicationJson);
                 _client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+                _client.DefaultRequestHeaders.Add("CustomerID", CustomerID);
                 return _client.PostAsync(Constants.LinkReport, stringContent).Result;
 
             }
@@ -90,13 +93,14 @@ namespace NeoBankWebApp.API_Service
         }
 
 
-        public HttpResponseMessage OnboardCompany(AddCompany addCompany,string token)
+        public HttpResponseMessage OnboardCompany(AddCompany addCompany,string token, string CustomerID)
         {
             try
             {
                 var stringContent = new StringContent(JsonConvert.SerializeObject(addCompany), Encoding.UTF8, Constants.ApplicationJson);
                 _client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
                 _client.DefaultRequestHeaders.Add("CompanyCode", Constants.CompanyCode);
+                _client.DefaultRequestHeaders.Add("CustomerID", CustomerID);
                 return _client.PostAsync(Constants.OnboardCompany, stringContent).Result;
 
             }
@@ -106,19 +110,36 @@ namespace NeoBankWebApp.API_Service
             }
 
         }
-        public HttpResponseMessage OnboardUser(AddUser addUser, string token)
+        public HttpResponseMessage OnboardUser(AddUser addUser, string token, string CustomerID)
         {
             try
             {
                 var stringContent = new StringContent(JsonConvert.SerializeObject(addUser), Encoding.UTF8, Constants.ApplicationJson);
                 _client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
                 _client.DefaultRequestHeaders.Add("CompanyCode", Constants.CompanyCode);
+                _client.DefaultRequestHeaders.Add("CustomerID", CustomerID);
                 return _client.PostAsync(Constants.OnboardUser, stringContent).Result;
             }
             catch (Exception ex)
             {
                 throw ex;
             }
+        }
+        public HttpResponseMessage GetOboardedUserList(GetOnboardedUser requestBody, string token, string CustomerID)
+        {
+            try
+            {
+                var stringContent = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, Constants.ApplicationJson);
+                _client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+                _client.DefaultRequestHeaders.Add("CompanyCode", Constants.CompanyCode);
+                _client.DefaultRequestHeaders.Add("CustomerID", CustomerID);
+                return _client.PostAsync(Constants.GetOnBoardedUser, stringContent).Result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
         }
         public HttpResponseMessage GetCompanyList()
         {

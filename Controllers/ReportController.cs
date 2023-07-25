@@ -33,7 +33,7 @@ namespace NeoBankWebApp.Controllers
 
                 if (actualRequest.SelectedReport == "2")
                 {
-                    using (HttpResponseMessage responseMessages = _clientService.PaymentGatewatReport(values, HttpContext.Session.GetString(Variables.AccessToken)))
+                    using (HttpResponseMessage responseMessages = _clientService.PaymentGatewatReport(values, HttpContext.Session.GetString(Variables.AccessToken), HttpContext.Session.GetString(Variables.CustomerID)))
                     {
                         string reportInfo = responseMessages.Content.ReadAsStringAsync().Result.ToString();
                         if (responseMessages.IsSuccessStatusCode)

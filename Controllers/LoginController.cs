@@ -72,7 +72,7 @@ namespace NeoBankWebApp.Controllers
             string storedCaptchaCode = HttpContext.Session.GetString(SessionKeyCaptcha);
             bool isValid = !string.IsNullOrEmpty(storedCaptchaCode) &&
                            !string.IsNullOrEmpty(captchaInput) &&
-                           string.Equals(storedCaptchaCode, captchaInput, StringComparison.OrdinalIgnoreCase);
+                           string.Equals(storedCaptchaCode, captchaInput, StringComparison.Ordinal);
             HttpContext.Session.Remove(SessionKeyCaptcha);
 
             if (!isValid)
@@ -97,7 +97,7 @@ namespace NeoBankWebApp.Controllers
                     HttpContext.Session.SetString(Variables.TokenGenarationTime, DateTime.Now.ToString());
                     //var result = _clientService.UserInfo(login, tokens.Access_Token);
 
-                    using (var result = _clientService.UserInfo(login, tokens.Access_Token))
+                    using (var result = _clientService.UserInfo(login, tokens.Access_Token, HttpContext.Session.GetString(Variables.CustomerID)))
                     {
                         string custInfo = result.Content.ReadAsStringAsync().Result.ToString();
                         ApiResponse errorResponse = JsonConvert.DeserializeObject<ApiResponse>(custInfo);
@@ -106,7 +106,6 @@ namespace NeoBankWebApp.Controllers
                             UserInfoResponse custInformations = JsonConvert.DeserializeObject<UserInfoResponse>(custInfo);
                             HttpContext.Session.SetString(Variables.CustomerID, custInformations.CustomerId.ToString());
                             HttpContext.Session.SetString(Variables.UserType, custInformations.UserType.ToString());
-
                             HttpContext.Session.SetString(Variables.UserName, custInformations.UserName);
                             if (custInformations.UserType == "1")
                             {
@@ -114,7 +113,7 @@ namespace NeoBankWebApp.Controllers
                             }
                             if (custInformations.UserType == "2")
                             {
-                                return RedirectToAction("Index", "Admin");
+                                return RedirectToAction("SubIndex", "Admin");
 
                             }
                             if (custInformations.UserType == "3")
@@ -154,74 +153,58 @@ namespace NeoBankWebApp.Controllers
         }
         private string GenerateRandomCode()
         {
-            const string allowedChars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789@#$abcdefghijklmanopqrstuvwxyz";
+           
+            string numbers = "0123456789";
+            string capitalLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            string lowercaseLetters = "abcdefghijklmnopqrstuvwxyz";
+
             Random random = new Random();
-            char[] chars = new char[6];
-            for (int i = 0; i < 6; i++)
-            {
-                chars[i] = allowedChars[random.Next(0, allowedChars.Length)];
-            }
-            return new string(chars);
+            string generatedCode = "";
+
+            // Add two random numbers
+            generatedCode += numbers[random.Next(numbers.Length)];
+            generatedCode += numbers[random.Next(numbers.Length)];
+
+            // Add two random capital letters
+            generatedCode += capitalLetters[random.Next(capitalLetters.Length)];
+            generatedCode += capitalLetters[random.Next(capitalLetters.Length)];
+
+            // Add two random lowercase letters
+            generatedCode += lowercaseLetters[random.Next(lowercaseLetters.Length)];
+            generatedCode += lowercaseLetters[random.Next(lowercaseLetters.Length)];
+
+            // Shuffle the characters to mix them up
+            generatedCode = new string(generatedCode.ToCharArray().OrderBy(c => random.Next()).ToArray());
+
+            return new string(generatedCode);
         }
-        /*  private byte[] GenerateCaptchaImage(string captchaCode)
-          {
-
-              using (Bitmap bitmap = new Bitmap(250, 80))
-              using (Graphics graphics = Graphics.FromImage(bitmap))
-              {
-                  graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                  graphics.Clear(Color.White);
-
-                  using (Font font = new Font("Arial", 36, FontStyle.Bold))
-                  using (Brush brush = new SolidBrush(Color.DarkBlue))
-                  {
-                      graphics.DrawString(captchaCode, font, brush, 10, 10);
-                  }
-
-                  using (MemoryStream stream = new MemoryStream())
-                  {
-                      bitmap.Save(stream, ImageFormat.Png);
-                      return stream.ToArray();
-                  }
-              }
-          }
-  */
         private byte[] GenerateCaptchaImage(string captchaCode)
         {
+            
+
+            // Define the background color
+            Color backgroundColor = Color.FromArgb(41, 82, 62); // Greenish color
+
+            // Create a random generator
+            Random random = new Random();
+
             using (Bitmap bitmap = new Bitmap(250, 80))
             using (Graphics graphics = Graphics.FromImage(bitmap))
             {
                 graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                graphics.Clear(Color.White);
 
-                Random random = new Random();
-
-                // Generate random colors for the captcha text
-                Color[] colors = new Color[]
-                {
-            Color.Red,
-            Color.Green,
-            Color.Blue,
-            Color.Orange,
-            Color.Purple
-                };
+                // Fill the background with the specified color
+                graphics.Clear(backgroundColor);
 
                 using (Font font = new Font("Arial", 36, FontStyle.Bold))
+                using (Brush brush = new SolidBrush(Color.White))
                 {
-                    for (int i = 0; i < captchaCode.Length; i++)
-                    {
-                        // Generate a random color index
-                        int colorIndex = random.Next(colors.Length);
 
-                        using (Brush brush = new SolidBrush(colors[colorIndex]))
-                        {
-                            // Calculate the position for each character
-                            int xPos = 10 + (i * 40);
-                            int yPos = random.Next(10, 40);
+                    string generatedCode = captchaCode;                   
 
-                            graphics.DrawString(captchaCode[i].ToString(), font, brush, xPos, yPos);
-                        }
-                    }
+
+                    // Draw the generated captcha code on the image
+                    graphics.DrawString(generatedCode, font, brush, 10, 10);
                 }
 
                 using (MemoryStream stream = new MemoryStream())
@@ -231,6 +214,76 @@ namespace NeoBankWebApp.Controllers
                 }
             }
         }
+
+
+        /*      private byte[] GenerateCaptchaImage(string captchaCode)
+              {
+
+                  using (Bitmap bitmap = new Bitmap(250, 80))
+                  using (Graphics graphics = Graphics.FromImage(bitmap))
+                  {
+                      graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                      graphics.Clear(Color.White);
+
+                      using (Font font = new Font("Arial", 36, FontStyle.Bold))
+                      using (Brush brush = new SolidBrush(Color.DarkBlue))
+                      {
+                          graphics.DrawString(captchaCode, font, brush, 10, 10);
+                      }
+
+                      using (MemoryStream stream = new MemoryStream())
+                      {
+                          bitmap.Save(stream, ImageFormat.Png);
+                          return stream.ToArray();
+                      }
+                  }
+              }*/
+
+        /*    private byte[] GenerateCaptchaImage(string captchaCode)
+            {
+                using (Bitmap bitmap = new Bitmap(250, 80))
+                using (Graphics graphics = Graphics.FromImage(bitmap))
+                {
+                    graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                    graphics.Clear(Color.White);
+
+                    Random random = new Random();
+
+                    // Generate random colors for the captcha text
+                    Color[] colors = new Color[]
+                    {
+                Color.Red,
+                Color.Green,
+                Color.Blue,
+                Color.Orange,
+                Color.Purple
+                    };
+
+                    using (Font font = new Font("Arial", 36, FontStyle.Bold))
+                    {
+                        for (int i = 0; i < captchaCode.Length; i++)
+                        {
+                            // Generate a random color index
+                            int colorIndex = random.Next(colors.Length);
+
+                            using (Brush brush = new SolidBrush(colors[colorIndex]))
+                            {
+                                // Calculate the position for each character
+                                int xPos = 10 + (i * 40);
+                                int yPos = random.Next(10, 40);
+
+                                graphics.DrawString(captchaCode[i].ToString(), font, brush, xPos, yPos);
+                            }
+                        }
+                    }
+
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        bitmap.Save(stream, ImageFormat.Png);
+                        return stream.ToArray();
+                    }
+                }
+            }*/
         public async Task<IActionResult> Signout()
         {
             HttpContext.Session.Clear();

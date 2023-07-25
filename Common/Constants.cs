@@ -13,7 +13,8 @@
         public const string LinkReport = "/api/Report/PaymentGatewayReport";
         public const string OnboardCompany = "/api/Admin/AddCompany";
         public const string OnboardUser = "/api/Admin/AddUser";
-        public const string GetCompanyList = "/api/Admin/GetCompanyList";
+        public const string GetCompanyList = "/api/User/GetCompanyList";
+        public const string GetOnBoardedUser = "/api/Admin/ViewOnBoardedUser";
     }
 
     public class Variables

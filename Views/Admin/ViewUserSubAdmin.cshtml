@@ -1,0 +1,130 @@
+﻿@{
+    ViewData["Title"] = "ViewUserSubAdmin";
+    Layout = "~/Views/Shared/SubAdminLayout.cshtml";
+}
+
+<script>
+    $(document).ready(function () {
+
+alert("hai");
+        data = { }
+            $.ajax({
+                url: '/Admin/GetOnboardedUserList',
+                method: 'POST',
+                data: data,
+                success: function (response) {
+                var data = response;                
+                    $('#myTable tbody').empty();
+
+                   $.each(data, function (index, item) {
+                    var row = $("<tr></tr>");              
+
+                    row.append("<td>" + item.customerId + "</td>");
+                    row.append("<td>" + item.userName + "</td>");
+                    row.append("<td>" + item.mobileNo + "</td>");
+                    row.append("<td>" + item.emailAddress + "</td>");
+                    row.append("<td>" + item.userStatus + "</td>");
+
+                    var button = $("<button>More Info</button>");
+                    button.click(function () {
+                        alert ("hai")
+                    });
+                    var cell = $("<td></td>");
+                    cell.append(button);
+                    row.append(cell);
+                    $("#myTable tbody").append(row);
+                    });
+                },
+                error: function (xhr, status, error) {
+                }
+            });
+    
+ 
+    });
+</script>
+<div id="paginationContainer">
+    <ul class="pagination"></ul>
+    <div class="row justify-content-center" style="margin-top:30px;">
+
+        <div class="col-lg-12 col-12">
+            <h5 class="text-primary font-weight-bold">OnBoarded Users</h5> <hr />
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <div class="table-responsive pagination">
+                        <table class="table table-bordered customerTransactions w-100" id="myTable"
+                               data-filter="false" data-page-length="10" data-length-change="false" data-info="false" cellspacing="0">
+                            <thead>
+                                <tr role="row">
+                                    <th class="tablehead sorting sorting_asc" tabindex="0" aria-controls="transactionStatement" rowspan="1" colspan="1" aria-label="Transaction ID: activate to sort column descending" style="width: 90.2079px;" aria-sort="ascending">Customer ID</th>
+                                    <th class="tablehead sorting" tabindex="0" aria-controls="transactionStatement" rowspan="1" colspan="1" aria-label="Transaction Date: activate to sort column ascending" style="width: 269.200px;">Customer Name</th>
+                                    <th class="tablehead sorting" tabindex="0" aria-controls="transactionStatement" rowspan="1" colspan="1" aria-label="Description: activate to sort column ascending" style="width: 196.208px;">Mobile Number</th>
+                                    <th class="tablehead sorting" tabindex="0" aria-controls="transactionStatement" rowspan="1" colspan="1" aria-label="Description: activate to sort column ascending" style="width: 196.208px;">Email</th>
+                                    <th style="min-width: 90px; width: 90.2079px;" class="tablehead sorting" tabindex="0" aria-controls="transactionStatement" rowspan="1" colspan="1" aria-label="Balance: activate to sort column ascending">Status</th>
+                                    <th style="min-width: 90px; width: 90.2079px;" class="tablehead sorting" tabindex="0" aria-controls="transactionStatement" rowspan="1" colspan="1" aria-label="Balance: activate to sort column ascending">More Details</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                        <div id="pagination" class="pagination-container">
+                            <ul id="pagination-list" class="pagination"></ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript-->
+<script src="~/vendor/jquery/jquery.min.js"></script>
+<script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- Core plugin JavaScript-->
+<script src="~/vendor/jquery-easing/jquery.easing.min.js"></script>
+<!-- Custom scripts for all pages-->
+<script src="~/js/portal.js"></script>
+
+<!-- Custom scripts for all pages-->
+<!-- Custom scripts for all pages--> 
+
+
+@*
+<script>
+    $(document).ready(function () {
+        alert("hai")
+    //    $.ajax({
+    //        url: '/Admin/GetOnboardedUserList',
+    //        method: 'POST',
+    //        success: function (response) {
+    //            var data = response;
+    //            alert(response)
+
+    //            $('#myTable tbody').empty();
+    //            $.each(data, function (index, item) {
+    //                var row = $("<tr></tr>");
+    //                row.append("<td>" + item.CustomerId + "</td>");
+    //                row.append("<td>" + item.UserName + "</td>");
+    //                row.append("<td>" + item.MobileNo + "</td>");
+    //                row.append("<td>" + item.EmailAddress + "</td>");
+    //                row.append("<td>" + item.UserStatus + "</td>");
+    //                row.append("<td>" + <a href="#" onclick = "myFunction()" > Click More Info < /a>+ "</td > ");
+    //                                $("#myTable tbody").append(row);
+    //            });
+    //        },
+    //        error: function (xhr, status, error) {
+    //        }
+    //    });
+
+    //});
+    //            });
+
+    //function myFunction() {
+    //    // Code for handling the "Click More Info" action
+    //}
+</script>
+
+*@

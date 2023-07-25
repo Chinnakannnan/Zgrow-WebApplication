@@ -8,11 +8,13 @@ namespace NeoBankWebApp.API_Service
     public interface IAPIService
     {
      HttpResponseMessage LoginVaildate(LoginRequest requestBody);
-     HttpResponseMessage UserInfo(LoginRequest requestBody, string token);
-     HttpResponseMessage InitiatePayment(PaymentInitiate requestBody, string token); 
-     HttpResponseMessage PaymentGatewatReport(ConvertedRequest requestBody, string token);
-     HttpResponseMessage OnboardCompany(AddCompany addCompany, string token);
-     HttpResponseMessage OnboardUser(AddUser addUser, string token);
+     HttpResponseMessage UserInfo(LoginRequest requestBody, string token, string CustomerID);
+     HttpResponseMessage InitiatePayment(PaymentInitiate requestBody, string token, string CustomerID); 
+     HttpResponseMessage PaymentGatewatReport(ConvertedRequest requestBody, string token, string CustomerID);
+     HttpResponseMessage OnboardCompany(AddCompany addCompany, string token, string CustomerID);
+     HttpResponseMessage OnboardUser(AddUser addUser, string token, string CustomerID);
+        HttpResponseMessage GetOboardedUserList(GetOnboardedUser requestBody, string token, string CustomerID);
+
      HttpResponseMessage GetCompanyList();
     }
 }

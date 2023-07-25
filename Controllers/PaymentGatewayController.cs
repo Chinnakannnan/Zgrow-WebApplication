@@ -54,7 +54,7 @@ namespace NeoBankWebApp.Controllers
                 values.IpAddress= PaymentInitiateRequest.IpAddress;
                 values.Latitude= PaymentInitiateRequest.Latitude;
                 values.Longitude = PaymentInitiateRequest.Longitude;
-                using (HttpResponseMessage responseMessages = _clientService.InitiatePayment(values, HttpContext.Session.GetString(Variables.AccessToken)))
+                using (HttpResponseMessage responseMessages = _clientService.InitiatePayment(values, HttpContext.Session.GetString(Variables.AccessToken), HttpContext.Session.GetString(Variables.CustomerID)))
                 {
                     string linkInfo = responseMessages.Content.ReadAsStringAsync().Result.ToString();
                     if (responseMessages.IsSuccessStatusCode)
@@ -129,7 +129,7 @@ namespace NeoBankWebApp.Controllers
                 values.IpAddress = IpAddress;
                 values.Latitude = Latitude;
                 values.Longitude = Longitude;
-                HttpResponseMessage responseMessages = _clientService.InitiatePayment(values, "");
+                HttpResponseMessage responseMessages = _clientService.InitiatePayment(values, "", HttpContext.Session.GetString(Variables.CustomerID));
                 string linkInfo = responseMessages.Content.ReadAsStringAsync().Result.ToString();
                 ApiResponse objResult = JsonConvert.DeserializeObject<ApiResponse>(linkInfo);
                 LinkResponseFinal response = JsonConvert.DeserializeObject<LinkResponseFinal>(objResult.Data.ToString());

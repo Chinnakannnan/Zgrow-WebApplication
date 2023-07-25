@@ -1,10 +1,12 @@
-﻿@{
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+﻿
+@{
+    ViewData["Title"] = "SubIndex";
+    Layout = "~/Views/Shared/SubAdminLayout.cshtml";
 }
+
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="dashboard.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -27,11 +29,12 @@
                 margin-bottom: 20px;
             }
     </style>
+    <link rel="stylesheet" type="text/css" href="dashboard.css">
 </head>
 
 
 <body>
-    <div class="dashboard">        
+    <div class="dashboard">
         <div class="content">
             <h2>Welcome to your dashboard!</h2>
             <p>This is where you can access all the important information and manage your account settings.</p>
@@ -40,5 +43,4 @@
     </div>
 </body>
 </html>
-
 

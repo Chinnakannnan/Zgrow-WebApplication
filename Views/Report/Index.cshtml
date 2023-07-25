@@ -94,7 +94,6 @@
         var currentDate = new Date().toISOString().slice(0, 10);
         $('#startDate').val(currentDate);
         $('#endDate').val(currentDate);
-
         $("#btnSubmit").click(function () {
              
             var selectedreport = $("input[name='report']:checked").val();
@@ -111,14 +110,14 @@
                 method: 'POST',
                 data: data,
                 success: function (response) {           
-                    var data = response;
-                    alert(response)
+                    var data = response; 
                     if (response=="1") {
                         alert("Please Enter Proper Value")
                         return;
                     }
                     $('#myTable tbody').empty();
-                    $.each(data, function (index, item) {                      
+                    $.each(data, function (index, item) {   
+                        
                             var row = $("<tr></tr>");                      
                             row.append("<td>" + item.customerId + "</td>");
                             row.append("<td>" + item.reference_Id + "</td>");

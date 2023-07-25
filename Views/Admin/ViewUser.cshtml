@@ -1,0 +1,101 @@
+﻿@{
+    ViewData["Title"] = "ViewUser";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+
+<table id="editableTable">
+    <thead>
+        <tr>
+            <th>Column 1</th>
+            <th>Column 2</th>
+            <th>Column 3</th>
+            <!-- Add more column headers as needed -->
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><input type="text" class="editable" /></td>
+            <td><input type="text" class="editable" /></td>
+            <td><input type="text" class="editable" /></td>
+            <!-- Add more input fields for each column -->
+        </tr>
+    </tbody>
+</table>
+<button id="saveBtn">Save</button>
+
+<script>
+    $(document).ready(function() {
+  $.ajax({
+    url: 'your_endpoint_url',
+    method: 'GET',
+    success: function(response) {
+      // Populate the table with the received values
+      var tableData = response.data; // Assuming the response is in the form of { "data": [...] }
+      populateTable(tableData);
+    },
+    error: function(error) {
+      console.error('Error:', error);
+    }
+  });
+});
+
+function populateTable(data) {
+  var $tableBody = $('#editableTable tbody');
+  $tableBody.empty(); // Clear existing rows
+
+  data.forEach(function(rowData) {
+    var $row = $('<tr>');
+
+    // Append each value to a new cell
+    Object.values(rowData).forEach(function(value) {
+    var $cell = $('<td>').text(value);
+        $row.append($cell);
+        });
+
+        $tableBody.append($row);
+        });
+        }
+
+
+    $(document).on('click', '#editableTable td', function () {
+        $(this).html('<input type="text" class="editable" value="' + $(this).text() + '" />');
+    });
+
+    // Save the changes when the save button is clicked
+    $(document).on('click', '#saveBtn', function () {
+        var updatedData = [];
+
+        $('#editableTable tbody tr').each(function () {
+            var rowData = {};
+            $(this).find('input.editable').each(function (index, input) {
+                rowData['column' + (index + 1)] = $(input).val();
+            });
+            updatedData.push(rowData);
+        });
+
+        // Make AJAX call to save the updated data
+        $.ajax({
+            url: 'your_save_endpoint_url',
+            method: 'POST',
+            data: { data: updatedData },
+            success: function (response) {
+                console.log('Data saved successfully!');
+            },
+            error: function (error) {
+                console.error('Error:', error);
+            }
+        });
+    });
+
+
+
+
+
+
+
+
+
+
+ </script>
